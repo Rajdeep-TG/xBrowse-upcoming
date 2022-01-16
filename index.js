@@ -65,7 +65,7 @@ class BrowserLikeWindow extends EventEmitter {
     this.win = new BrowserWindow({
       ...winOptions,
       width,
-      height
+      height,
     });
 
     this.defCurrentViewId = null;
@@ -92,7 +92,9 @@ class BrowserLikeWindow extends EventEmitter {
     this.controlView.setBounds(this.getControlBounds());
     this.controlView.setAutoResize({ width: true });
     this.controlView.webContents.loadURL(controlPanel);
-
+    ipcMain.on('set-browseview', (event, url) => {
+      this.controlView.webContents.loadURL(url);
+    })
     const webContentsAct = actionName => {
       const webContents = this.currentWebContents;
       const action = webContents && webContents[actionName];
@@ -280,6 +282,7 @@ class BrowserLikeWindow extends EventEmitter {
 
   loadURL(url) {
     const { currentView } = this;
+    const fileUrl = require('file-url');
     if (!url || !currentView) return;
 
     const { id, webContents } = currentView;
@@ -287,6 +290,10 @@ class BrowserLikeWindow extends EventEmitter {
     // Prevent addEventListeners on same webContents when enter urls in same tab
     const MARKS = '__IS_INITIALIZED__';
     if (webContents[MARKS]) {
+      if(url.includes('px://')){
+        url.replace("px://", "");
+        url = fileUrl(`${__dirname}/main/renderer/${url.replace("px://", "")}.html`);
+      }
       webContents.loadURL(url);
       return;
     }
@@ -324,6 +331,27 @@ class BrowserLikeWindow extends EventEmitter {
       })
       .on('did-start-navigation', (e, href, isInPlace, isMainFrame) => {
         if (isMainFrame) {
+          const fileUrl = require('file-url');
+          if(href == this.options.blankPage){
+            href = "";
+          }
+
+          if(href.includes(fileUrl(`${__dirname}/main/renderer/settings.html`))){
+            href = "px://settings";
+          }
+
+          if(href.includes(fileUrl(`${__dirname}/main/renderer/about.html`))){
+            href = "px://about";
+          }
+
+          if(href.includes(fileUrl(`${__dirname}/main/renderer/help.html`))){
+            href = "px://help";
+          }
+
+          if(href.includes(fileUrl(`${__dirname}/main/renderer/credits.html`))){
+            href = "px://credits";
+          }
+
           log.debug('did-start-navigation > set url address', {
             href,
             isInPlace,
@@ -364,10 +392,35 @@ class BrowserLikeWindow extends EventEmitter {
     webContents.loadURL(url);
     webContents[MARKS] = true;
 
+    webContents.on('unresponsive', async () => {
+      const { response } = await dialog.showMessageBox({
+        message: 'this Website has become unresponsive',
+        title: 'Do you want to try forcefully reloading the website?',
+        buttons: ['OK', 'Cancel'],
+        cancelId: 1
+      })
+      if (response === 0) {
+        webContents.forcefullyCrashRenderer()
+        webContents.reload()
+      }
+    })
+
+    webContents
+      .executeJavaScript('localStorage.user_agent', true)
+      .then(result => {
+        if (result == undefined) {
+          webContents.setUserAgent(`Mozilla/5.0 (Windows NT ${require('os').release()}; Win64; ${require('os').arch()}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36`)
+        }else{
+          webContents.setUserAgent(result);
+        }
+      });
+
+    //webContents.setUserAgent(`Mozilla/5.0 (Windows NT ${require('os').release()}; Win64; ${require('os').arch()}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36`)
+
     this.setContentBounds();
 
     if (this.options.debug) {
-      webContents.openDevTools({ mode: 'detach' });
+     // webContents.openDevTools({ mode: 'detach' });
     }
   }
 
@@ -423,7 +476,9 @@ class BrowserLikeWindow extends EventEmitter {
      * @return {string} [source.openedURL] - opened with url
      * @return {BrowserView} source.lastView - previous active view
      */
-    this.emit('new-tab', view, { openedURL: url, lastView });
+    // var uril = "px://newtab";
+    // this.emit('url-updated', { view: view, uril });
+    // this.emit('new-tab', view, { openedURL: uril, lastView });
     return view;
   }
 

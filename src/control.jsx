@@ -92,9 +92,12 @@ const IconRight = () => (
 
 function Control() {
   const { tabs, tabIDs, activeID } = useConnect();
-
+  const validUrl = require('../../prod_lib/isUrl.js');
+  const { ipcRenderer } = require('electron')
   const { url, canGoForward, canGoBack, isLoading } = tabs[activeID] || {};
-
+  const settings = () => {
+    ipcRenderer.send('open-settings', 'yes')
+  }
   const onUrlChange = e => {
     // Sync to tab config
     const v = e.target.value;
@@ -107,7 +110,11 @@ function Control() {
 
     let href = v;
     if (!/^.*?:\/\//.test(v)) {
-      href = `http://${v}`;
+      if(validUrl.isUri(v)){
+        href = `http://${v}`;
+      }else{
+        href = `https://www.google.com/search?q=${v}`;
+      }
     }
     action.sendEnterURL(href);
   };
@@ -124,7 +131,7 @@ function Control() {
 
   return (
     <div className="container">
-      <div className="tabs">
+      <div  className="tabs">
         <>
           {tabIDs.map(id => {
             // eslint-disable-next-line no-shadow
@@ -145,7 +152,7 @@ function Control() {
               </div>
             );
           })}
-          <span type="plus" style={{ marginLeft: 10 }} onClick={newTab}>
+          <span type="plus" className="plusic" style={{ marginLeft: 10 }} onClick={newTab}>
             <IconPlus />
           </span>
         </>
@@ -174,7 +181,16 @@ function Control() {
             value={url || ''}
             onChange={onUrlChange}
             onKeyDown={onPressEnter}
+            placeholder="Search or Type a URL"
           />
+           <div className="actions">
+            {/*<div
+              className={"settings"}
+              onClick={settings}
+            >
+              <IconLeft />
+            </div>*/}
+          </div>
         </div>
       </div>
     </div>
