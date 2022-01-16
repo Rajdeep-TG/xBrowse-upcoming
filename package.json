@@ -25,7 +25,18 @@
   "build": {
     "appId": "px.xbrowse",
     "mac": {
-      "category": "your.app.category.type"
+      "category": "your.app.category.type",
+      "icon": "icons/icon.icns"
+    },
+    "win": {
+      "asar": true,
+      "target": "nsis",
+      "icon": "icons/icon.ico"
+    },
+    "linux":{
+      "target":"deb",
+      "maintainer":"pxlinux",
+      "icon":"icons/icon.ico"
     }
   },
   "dependencies": {

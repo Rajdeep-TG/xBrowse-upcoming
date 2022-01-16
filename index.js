@@ -66,6 +66,7 @@ class BrowserLikeWindow extends EventEmitter {
       ...winOptions,
       width,
       height,
+      icon:'icons/icon.ico',
     });
 
     this.defCurrentViewId = null;
