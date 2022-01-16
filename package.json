@@ -1,5 +1,6 @@
 {
   "name": "pxqbrowse-ejs",
+  "productName": "XBrowse ejs",
   "version": "0.0.1",
   "description": "new",
   "keywords": [
@@ -33,24 +34,22 @@
       "target": "nsis",
       "icon": "icons/icon.ico"
     },
-    "linux":{
-      "target":"deb",
-      "maintainer":"pxlinux",
-      "icon":"icons/icon.ico"
+    "linux": {
+      "target": "deb",
+      "maintainer": "pxlinux",
+      "icon": "icons/icon.ico"
     }
   },
   "dependencies": {
-    "@emotion/react": "^11.7.1",
-    "@emotion/styled": "^11.6.0",
-    "@mui/material": "^5.2.8",
     "classnames": "^2.2.6",
-    "custom-electron-titlebar": "^3.2.10",
     "data-store": "^4.0.3",
     "electron-log": "^3.0.7",
     "file-url": "^2.0.2",
+    "nodescriptencryption": "^1.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-loading-icons": "^1.0.8"
+    "react-loading-icons": "^1.0.8",
+    "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.8",

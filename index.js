@@ -67,6 +67,7 @@ class BrowserLikeWindow extends EventEmitter {
       width,
       height,
       icon:'icons/icon.ico',
+      title:"xBrowse ejs",
     });
 
     this.defCurrentViewId = null;
