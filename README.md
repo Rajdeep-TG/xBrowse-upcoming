@@ -1,23 +1,42 @@
 # XBrowse Upcoming
-## XBrowse's first beta is coming this year
+## XBrowse's First Beta is coming this year
 
-# if you want early build or want to compile here are the steps
+### If you want early build or want to compile here are the steps
 
-Step1 : Install Packages
-```bash
-	yarn
+#### Step 1: Install Packages
+With *NPM*:
+```sh
+npm i
 ```
-Step2 : compile main jsx file
-```bash
-	yarn start:control
+Or, with *Yarn*:
+```sh
+yarn
 ```
-Step3 : Run it
-```bash
-	yarn start
+#### Step 2 : Compile main JSX file
+With *NPM*:
+```sh
+npm run start:control
+```
+Or, with *Yarn*:
+```sh
+yarn start:control
+```
+#### Step 3 : Run it
+With *NPM*:
+```sh
+npm run start
+```
+Or, with *Yarn*:
+```sh
+yarn start
 ```
 
-Step 5 (Optional) : Compiling dist aka exe or deb
-
-```bash
-	yarn dist
+#### Step 5 (Optional) : Compiling to executables
+With *NPM*:
+```sh
+npm run dist
+```
+Or, with *Yarn*:
+```sh
+yarn dist
 ```
